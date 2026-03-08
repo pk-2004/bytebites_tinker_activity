@@ -50,6 +50,15 @@ class ItemCollection:
         """Return items matching the given category."""
         return [item for item in self.items if item.category == category]
 
+    # additional helpers
+    def sort_by_price(self, reverse: bool = False) -> None:
+        """Sort the internal list of items by price in-place."""
+        self.items.sort(key=lambda i: i.price, reverse=reverse)
+
+    def sorted_by_popularity(self) -> List[Item]:
+        """Return a new list of items ordered by popularity (highest first)."""
+        return sorted(self.items, key=lambda i: i.popularity, reverse=True)
+
     def __repr__(self) -> str:
         return f"ItemCollection({self.items!r})"
 
@@ -66,6 +75,15 @@ class Transaction:
     def total_cost(self) -> float:
         """Compute and return the total price of all items."""
         return sum(item.price for item in self.items)
+
+    def item_count(self) -> int:
+        """How many items are in this transaction."""
+        return len(self.items)
+
+    # optional view-friendly method
+    def items_sorted(self, *, key=None, reverse: bool = False) -> List[Item]:
+        """Return a sorted copy of the transaction items using a key function."""
+        return sorted(self.items, key=key, reverse=reverse)
 
     def __repr__(self) -> str:
         return f"Transaction(items={self.items!r})"
@@ -86,6 +104,15 @@ class Customer:
     def is_real_user(self) -> bool:
         """Simple check for a valid customer (name + history)."""
         return bool(self.name and self.purchase_history)
+
+    # additional convenience
+    def total_spent(self) -> float:
+        """Sum of costs for every transaction in the history."""
+        return sum(txn.total_cost() for txn in self.purchase_history)
+
+    def transaction_count(self) -> int:
+        """Number of recorded transactions."""
+        return len(self.purchase_history)
 
     def __repr__(self) -> str:
         return (
