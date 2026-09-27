@@ -12,3 +12,5 @@ in the spec.
 <!-- Write a short set of instructions guiding how your AI assistant should behave 
 when helping with this project — for example, which classes to stay within, 
 what complexity to avoid, or any preferences for how suggestions are structured. -->
+
+The classes highlighted in the mermaid diagram should be named Item, Customer, Transaction, and ItemCollection. Try to focus on main attrbutes and the names of functions and everyhting should be simple to understand. 

@@ -1,0 +1,41 @@
+classDiagram
+    class Item {
+        +str name
+        +float price
+        +str category
+        +float popularity
+        +__post_init__() None
+        +__repr__() str
+    }
+
+    class ItemCollection {
+        +List~Item~ items
+        +add_item(item Item) None
+        +filter_by_category(category str) List~Item~
+        +sort_by_price(reverse bool) None
+        +sorted_by_popularity() List~Item~
+        +__repr__() str
+    }
+
+    class Transaction {
+        +List~Item~ items
+        +add_item(item Item) None
+        +total_cost() float
+        +item_count() int
+        +items_sorted(key, reverse bool) List~Item~
+        +__repr__() str
+    }
+
+    class Customer {
+        +str name
+        +List~Transaction~ purchase_history
+        +add_transaction(txn Transaction) None
+        +is_real_user() bool
+        +total_spent() float
+        +transaction_count() int
+        +__repr__() str
+    }
+
+    ItemCollection "1" o-- "*" Item : catalogs
+    Transaction "1" o-- "*" Item : includes
+    Customer "1" o-- "*" Transaction : purchase history

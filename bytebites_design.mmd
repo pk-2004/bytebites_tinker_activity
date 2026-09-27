@@ -1,0 +1,40 @@
+classDiagram
+    class Item {
+        +str name
+        +float price
+        +str category
+        +float popularity
+        +describe() str
+    }
+
+    class ItemCollection {
+        +List~Item~ items
+        +add_item(item) None
+        +remove_item(name) None
+        +find_by_name(name) Item
+        +filter_by_category(category) List~Item~
+        +sort_by_price() List~Item~
+        +sort_by_popularity() List~Item~
+    }
+
+    class Transaction {
+        +str transaction_id
+        +List~Item~ items
+        +add_item(item) None
+        +remove_item(name) None
+        +item_count() int
+        +total_cost() float
+    }
+
+    class Customer {
+        +str name
+        +List~Transaction~ purchase_history
+        +add_transaction(transaction) None
+        +transaction_count() int
+        +total_spent() float
+        +favorite_category() str
+    }
+
+    ItemCollection "1" o-- "*" Item : catalogs
+    Transaction "1" o-- "*" Item : includes
+    Customer "1" o-- "*" Transaction : purchase history
