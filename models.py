@@ -91,7 +91,7 @@ class Transaction:
 
     def total_cost(self) -> float:
         """Add up the price of every item in this order."""
-        # TODO: sum the prices
+        # TODO: add the prices
         pass
 
 
