@@ -1,13 +1,10 @@
-"""Scaffold for the ByteBites backend models.
+"""Backend models for the ByteBites campus food ordering app.
 
 Four classes, built bottom-up:
     Item            - info about a food item the user chooses
     ItemCollection  - the menu: every Item, with search/filter/sort helpers
     Transaction     - the selected items for one order, and its cost
     Customer        - a customer's name and purchase history
-
-Every method below is a stub. Fill them in one class at a time,
-starting with Item.
 """
 
 from typing import List, Optional
@@ -18,7 +15,8 @@ class Item:
 
     def __init__(self, name: str, price: float, category: str,
                  popularity: float = 0.0) -> None:
-        # TODO: raise ValueError if price is negative
+        if price < 0:
+            raise ValueError("Price cannot be negative")
         self.name = name
         self.price = price
         self.category = category
@@ -26,8 +24,7 @@ class Item:
 
     def describe(self) -> str:
         """Return a readable one-liner, e.g. 'Latte (Drinks) - $3.50'."""
-        # TODO: build and return the string
-        pass
+        return f"{self.name} ({self.category}) - ${self.price:.2f}"
 
 
 class ItemCollection:
@@ -38,33 +35,36 @@ class ItemCollection:
 
     def add_item(self, item: Item) -> None:
         """Add one item to the menu."""
-        # TODO: append to self.items
-        pass
+        self.items.append(item)
 
     def remove_item(self, name: str) -> None:
-        """Remove the item with this name, if it is on the menu."""
-        # TODO: find the matching item and remove it
-        pass
+        """Remove the item with this name. Does nothing if it isn't found."""
+        item = self.find_by_name(name)
+        if item is not None:
+            self.items.remove(item)
 
     def find_by_name(self, name: str) -> Optional[Item]:
         """Return the item with this name, or None if there isn't one."""
-        # TODO: loop through self.items and return the first match
-        pass
+        for item in self.items:
+            if item.name.lower() == name.lower():
+                return item
+        return None
 
     def filter_by_category(self, category: str) -> List[Item]:
         """Return a new list of the items in this category."""
-        # TODO: build a list of items whose category matches
-        pass
+        matches = []
+        for item in self.items:
+            if item.category.lower() == category.lower():
+                matches.append(item)
+        return matches
 
     def sort_by_price(self) -> List[Item]:
         """Return a new list of the items, cheapest first."""
-        # TODO: use sorted() with a key - do not reorder self.items
-        pass
+        return sorted(self.items, key=lambda item: item.price)
 
     def sort_by_popularity(self) -> List[Item]:
         """Return a new list of the items, most popular first."""
-        # TODO: use sorted() with a key and reverse=True
-        pass
+        return sorted(self.items, key=lambda item: item.popularity, reverse=True)
 
 
 class Transaction:
@@ -76,23 +76,25 @@ class Transaction:
 
     def add_item(self, item: Item) -> None:
         """Add one item to this order."""
-        # TODO: append to self.items
-        pass
+        self.items.append(item)
 
     def remove_item(self, name: str) -> None:
-        """Remove the item with this name from this order."""
-        # TODO: find the matching item and remove it
-        pass
+        """Remove the item with this name. Does nothing if it isn't found."""
+        for item in self.items:
+            if item.name.lower() == name.lower():
+                self.items.remove(item)
+                return
 
     def item_count(self) -> int:
         """How many items are in this order."""
-        # TODO: return the length of self.items
-        pass
+        return len(self.items)
 
     def total_cost(self) -> float:
         """Add up the price of every item in this order."""
-        # TODO: add the prices
-        pass
+        total = 0.0
+        for item in self.items:
+            total += item.price
+        return total
 
 
 class Customer:
@@ -104,21 +106,25 @@ class Customer:
 
     def add_transaction(self, transaction: Transaction) -> None:
         """Record a completed order for this customer."""
-        # TODO: append to self.purchase_history
-        pass
+        self.purchase_history.append(transaction)
 
     def transaction_count(self) -> int:
         """How many orders this customer has placed."""
-        # TODO: return the length of self.purchase_history
-        pass
+        return len(self.purchase_history)
 
     def total_spent(self) -> float:
         """Add up total_cost() across every order."""
-        # TODO: sum total_cost() for each transaction
-        pass
+        total = 0.0
+        for transaction in self.purchase_history:
+            total += transaction.total_cost()
+        return total
 
     def favorite_category(self) -> Optional[str]:
         """The category this customer buys most often, or None if no orders."""
-        # TODO: loop over every transaction, then every item inside it,
-        #       count each category in a dict, return the most common key
-        pass
+        counts = {}
+        for transaction in self.purchase_history:
+            for item in transaction.items:
+                counts[item.category] = counts.get(item.category, 0) + 1
+        if not counts:
+            return None
+        return max(counts, key=counts.get)
